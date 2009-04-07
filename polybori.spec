@@ -17,6 +17,7 @@ BuildRoot:	%{_tmppath}/%{name}-%{version}-%{release}-buildroot
 
 BuildRequires:	doxygen
 BuildRequires:	scons
+BuildRequires:	boost-devel
 BuildRequires:	ntl-devel
 # it wants singular sources, not devel...
 # BuildRequires:	singular-devel
