@@ -135,6 +135,9 @@ computing Gröbner bases over Boolean Rings.
 	DOCDIR=%{buildroot}%{_docdir}/%{name}		\
 	MANDIR=%{buildroot}%{_mandir}
 
+# stupid default attributes
+chmod a+r -R %{buildroot}
+
 %clean
 rm -rf %{buildroot}
 
