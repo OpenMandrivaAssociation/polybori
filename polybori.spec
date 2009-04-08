@@ -129,6 +129,7 @@ computing Gröbner bases over Boolean Rings.
 %install
 %scons install devel-install				\
 	PREFIX=%{buildroot}%{_prefix}			\
+	LIBDIR=%{buildroot}%{_libdir}			\
 	PYINSTALLPREFIX=%{buildroot}%{py_sitedir}	\
 	INSTALLDIR=%{buildroot}%{polyboridir}		\
 	PYPREFIX=%{py_prefix}				\
