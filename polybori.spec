@@ -141,6 +141,7 @@ chmod a+r -R %{buildroot}
 
 # move libraries to %{_libdir}
 if [ %{_prefix}/lib != %{_libdir} ]; then
+    mkdir -p %{buildroot}/%{_libdir}
     mv -f %{buildroot}%{_prefix}/lib/* %{buildroot}/%{_libdir}
 fi
 
