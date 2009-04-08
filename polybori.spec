@@ -129,7 +129,6 @@ computing Gröbner bases over Boolean Rings.
 %install
 %scons install devel-install				\
 	PREFIX=%{buildroot}%{_prefix}			\
-	LIBDIR=%{buildroot}%{_libdir}			\
 	PYINSTALLPREFIX=%{buildroot}%{py_sitedir}	\
 	INSTALLDIR=%{buildroot}%{polyboridir}		\
 	PYPREFIX=%{py_prefix}				\
@@ -139,6 +138,11 @@ computing Gröbner bases over Boolean Rings.
 
 # stupid default attributes
 chmod a+r -R %{buildroot}
+
+# move libraries to %{_libdir}
+if [ %{_prefix}/lib != %{_libdir} ]; then
+    mv -f %{buildroot}%{_prefix}/lib/* %{buildroot}/%{_libdir}
+fi
 
 %clean
 rm -rf %{buildroot}
