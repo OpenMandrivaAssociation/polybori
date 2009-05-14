@@ -9,7 +9,7 @@ Group:		Sciences/Mathematics
 License:	GPL
 Summary:	PolyBoRi is a C++ library for Polynomials over Boolean Rings
 Version:	0.6
-Release:	%mkrel 1
+Release:	%mkrel 2
 # browser link: http://sourceforge.net/project/downloading.php?group_id=210499&use_mirror=ufpr&filename=polybori-0.6-0rc0-2009-04-06.tar.gz&a=82369828
 Source0:	polybori-0.6-0rc0-2009-04-06.tar.gz
 URL:		http://polybori.sourceforge.net/
@@ -92,6 +92,7 @@ PolyBoRi development files.
 %package	-n %{staticdevname}
 Group:		Development/Other
 Summary:	PolyBoRi static libraries
+Provides:	%{name}-static-devel = %{version}-%{release}
 
 %description	-n %{staticdevname}
 PolyBoRi static libraries files.
