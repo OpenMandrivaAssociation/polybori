@@ -11,7 +11,7 @@ Summary:	PolyBoRi is a C++ library for Polynomials over Boolean Rings
 # because 0.6 was added to distro, but sagemath only works/builds with 0.5
 Epoch:		1
 Version:	0.5
-Release:	%mkrel 1
+Release:	%mkrel 2
 # browser link: http://sourceforge.net/project/downloading.php?group_id=210499&use_mirror=ufpr&filename=polybori-0.6-0rc0-2009-04-06.tar.gz&a=82369828
 #Source0:	polybori-0.6-0rc0-2009-04-06.tar.gz
 # Use sage version
@@ -32,9 +32,8 @@ BuildRequires:	tex4ht
 Requires:	ipython >= 0.6
 Requires:	boost >= 1.33
 
-Patch0:		polybori-0.5rc.p6-system-libm4ri.patch
 # Edited version of patch already included in tarball
-Patch1:		PyPolyBoRi.patch
+Patch0:		PyPolyBoRi.patch
 
 %description
 PolyBoRi is implemented as a C++ library for Polynomials over
@@ -69,6 +68,7 @@ This package provides python bindings to %{name}.
 %package	-n %{libname}
 Group:		System/Libraries
 Summary:	PolyBoRi runtime libraries
+Provides:	lib%{name} = %{version}-%{release}
 
 %description	-n %{libname}
 PolyBoRi runtime libraries.
@@ -82,6 +82,7 @@ PolyBoRi runtime libraries.
 Group:		Development/Other
 Summary:	PolyBoRi development files
 Provides:	%{name}-devel = %{version}-%{release}
+Requires:	lib%{name} = %{version}-%{release}
 
 %description	-n %{devname}
 PolyBoRi development files.
@@ -99,6 +100,8 @@ PolyBoRi development files.
 Group:		Development/Other
 Summary:	PolyBoRi static libraries
 Provides:	%{name}-static-devel = %{version}-%{release}
+Requires:	lib%{name} = %{version}-%{release}
+Requires:	%{name}-devel = %{version}-%{release}
 
 %description	-n %{staticdevname}
 PolyBoRi static libraries files.
@@ -128,7 +131,6 @@ computing Gröbner bases over Boolean Rings.
 %setup -q -n polybori-0.5rc.p6/src/polybori-0.5rc
 
 %patch0 -p1
-%patch1 -p1
 
 %build
 %scons prepare-install
