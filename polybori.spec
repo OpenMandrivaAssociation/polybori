@@ -1,3 +1,5 @@
+%define		_disable_ld_as_needed	1
+
 %define		name		polybori
 %define		libname		%mklibname %{name} 0
 %define		devname		%mklibname %{name} -d
@@ -11,7 +13,7 @@ Summary:	PolyBoRi is a C++ library for Polynomials over Boolean Rings
 # because 0.6 was added to distro, but sagemath only works/builds with 0.5
 Epoch:		1
 Version:	0.5rc.p9
-Release:	%mkrel 1
+Release:	%mkrel 2
 # browser link: http://sourceforge.net/project/downloading.php?group_id=210499&use_mirror=ufpr&filename=polybori-0.6-0rc0-2009-04-06.tar.gz&a=82369828
 # Use sage version
 Source0:	polybori-%{version}.tar.bz2
@@ -26,6 +28,7 @@ BuildRequires:	ntl-devel
 # BuildRequires:	singular-devel
 BuildRequires:	libm4ri-devel
 BuildRequires:	tex4ht
+
 %py_requires -d
 
 Requires:	ipython >= 0.6
@@ -33,6 +36,10 @@ Requires:	boost >= 1.33
 
 # Edited version of patch already included in tarball
 Patch0:		PyPolyBoRi.patch
+
+# This patch is required to build when sage is already installed
+# Another approach would be to set sage environment variables
+Patch1:		polybori-0.5rc.p9-sagemath.patch
 
 %description
 PolyBoRi is implemented as a C++ library for Polynomials over
@@ -130,6 +137,7 @@ computing Gröbner bases over Boolean Rings.
 %setup -q -n polybori-%{version}/src/polybori-0.5rc
 
 %patch0 -p1
+%patch1 -p1
 
 %build
 %scons prepare-install
@@ -143,7 +151,8 @@ computing Gröbner bases over Boolean Rings.
 	PYPREFIX=%{py_prefix}				\
 	PYTHON=%{__python}				\
 	DOCDIR=%{buildroot}%{_docdir}/%{name}		\
-	MANDIR=%{buildroot}%{_mandir}
+	MANDIR=%{buildroot}%{_mandir}			\
+	LIBS="-lntl"
 
 # stupid default attributes
 chmod a+r -R %{buildroot}
