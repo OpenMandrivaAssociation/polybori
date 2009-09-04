@@ -13,7 +13,7 @@ Summary:	PolyBoRi is a C++ library for Polynomials over Boolean Rings
 # because 0.6 was added to distro, but sagemath only works/builds with 0.5
 Epoch:		1
 Version:	0.5rc.p9
-Release:	%mkrel 3
+Release:	%mkrel 4
 # browser link: http://sourceforge.net/project/downloading.php?group_id=210499&use_mirror=ufpr&filename=polybori-0.6-0rc0-2009-04-06.tar.gz&a=82369828
 # Use sage version
 Source0:	polybori-%{version}.tar.bz2
@@ -145,8 +145,8 @@ computing Gröbner bases over Boolean Rings.
 perl -pi -e 's|stub\.c||;' Cudd/util/Makefile
 
 %build
-%scons prepare-install
-%scons prepare-devel
+%scons prepare-install	CPPDEFINES=UNIX=1
+%scons prepare-devel	CPPDEFINES=UNIX=1
 
 %install
 %scons install devel-install				\
@@ -157,7 +157,8 @@ perl -pi -e 's|stub\.c||;' Cudd/util/Makefile
 	PYTHON=%{__python}				\
 	DOCDIR=%{buildroot}%{_docdir}/%{name}		\
 	MANDIR=%{buildroot}%{_mandir}			\
-	LIBS="-lntl"
+	LIBS="-lntl"					\
+	CPPDEFINES=UNIX=1
 
 # stupid default attributes
 chmod a+r -R %{buildroot}
