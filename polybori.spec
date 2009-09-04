@@ -137,7 +137,7 @@ computing Gröbner bases over Boolean Rings.
 %setup -q -n polybori-%{version}/src/polybori-0.5rc
 
 %patch0 -p1
-%patch1 -p1
+%patch1 -p3
 
 %build
 %scons prepare-install
