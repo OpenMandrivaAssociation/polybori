@@ -13,7 +13,7 @@ Summary:	PolyBoRi is a C++ library for Polynomials over Boolean Rings
 # because 0.6 was added to distro, but sagemath only works/builds with 0.5
 Epoch:		1
 Version:	0.5rc.p9
-Release:	%mkrel 5
+Release:	%mkrel 6
 # browser link: http://sourceforge.net/project/downloading.php?group_id=210499&use_mirror=ufpr&filename=polybori-0.6-0rc0-2009-04-06.tar.gz&a=82369828
 # Use sage version
 Source0:	polybori-%{version}.tar.bz2
