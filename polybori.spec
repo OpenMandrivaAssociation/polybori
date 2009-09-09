@@ -28,6 +28,7 @@ BuildRequires:	ntl-devel
 # BuildRequires:	singular-devel
 BuildRequires:	libm4ri-devel
 BuildRequires:	tex4ht
+BuildRequires:	tetex-latex
 
 %py_requires -d
 
