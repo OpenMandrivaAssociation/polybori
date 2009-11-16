@@ -1,5 +1,7 @@
 %define		_disable_ld_as_needed	1
 
+%define		vers		0.6.3
+%define		date		20090827
 %define		name		polybori
 %define		libname		%mklibname %{name} 0
 %define		devname		%mklibname %{name} -d
@@ -10,13 +12,10 @@ Name:		%{name}
 Group:		Sciences/Mathematics
 License:	GPL
 Summary:	PolyBoRi is a C++ library for Polynomials over Boolean Rings
-# because 0.6 was added to distro, but sagemath only works/builds with 0.5
 Epoch:		1
-Version:	0.5rc.p9
-Release:	%mkrel 6
-# browser link: http://sourceforge.net/project/downloading.php?group_id=210499&use_mirror=ufpr&filename=polybori-0.6-0rc0-2009-04-06.tar.gz&a=82369828
-# Use sage version
-Source0:	polybori-%{version}.tar.bz2
+Version:	%{vers}.%{date}
+Release:	%mkrel 1
+Source0:	polybori-%{vers}-%{date}.tar.bz2
 URL:		http://polybori.sourceforge.net/
 BuildRoot:	%{_tmppath}/%{name}-%{version}-%{release}-buildroot
 
@@ -24,8 +23,6 @@ BuildRequires:	doxygen
 BuildRequires:	scons
 BuildRequires:	boost-devel
 BuildRequires:	ntl-devel
-# it wants singular sources, not devel...
-# BuildRequires:	singular-devel
 BuildRequires:	libm4ri-devel
 BuildRequires:	tex4ht
 BuildRequires:	tetex-latex
@@ -35,12 +32,7 @@ BuildRequires:	tetex-latex
 Requires:	ipython >= 0.6
 Requires:	boost >= 1.33
 
-# Edited version of patch already included in tarball
-Patch0:		PyPolyBoRi.patch
-
-# This patch is required to build when sage is already installed
-# Another approach would be to set sage environment variables
-Patch1:		polybori-0.5rc.p9-sagemath.patch
+Patch0:		polybori-%{vers}-%{date}-sagemath.patch
 
 %description
 PolyBoRi is implemented as a C++ library for Polynomials over
@@ -54,8 +46,6 @@ computing Gröbner bases over Boolean Rings.
 %dir %{polyboridir}
 %{polyboridir}/*
 %{_mandir}/man1/*
-%dir %doc %{_docdir}/%{name}
-%doc  %{_docdir}/%{name}/*
 
 ########################################################################
 %package	-n python-%{name}
@@ -68,8 +58,8 @@ This package provides python bindings to %{name}.
 
 %files		-n python-%{name}
 %defattr(-,root,root)
-%dir %{python_sitelib}/%{name}
-%{python_sitelib}/%{name}/*
+%dir %{py_platlibdir}/%{name}
+%{py_platlibdir}/%{name}/*
 
 ########################################################################
 %package	-n %{libname}
@@ -135,14 +125,9 @@ computing Gröbner bases over Boolean Rings.
 
 ########################################################################
 %prep
-%setup -q -n polybori-%{version}/src/polybori-0.5rc
+%setup -q -n polybori-%{vers}-%{date}/src/polybori-0.6
 
-%patch0 -p1
-%patch1 -p3
-
-# this library needs to be LD_PRELOAD'ed to work, would be nice if it
-# did not have stubs for things like popen, pclose, memset, memcpy, etc
-# or did properly detect the environment...
+%patch0 -p3
 perl -pi -e 's|stub\.c||;' Cudd/util/Makefile
 
 %build
@@ -152,7 +137,7 @@ perl -pi -e 's|stub\.c||;' Cudd/util/Makefile
 %install
 %scons install devel-install				\
 	PREFIX=%{buildroot}%{_prefix}			\
-	PYINSTALLPREFIX=%{buildroot}%{py_sitedir}	\
+	PYINSTALLPREFIX=%{buildroot}%{py_platlibdir}	\
 	INSTALLDIR=%{buildroot}%{polyboridir}		\
 	PYPREFIX=%{py_prefix}				\
 	PYTHON=%{__python}				\
@@ -161,7 +146,6 @@ perl -pi -e 's|stub\.c||;' Cudd/util/Makefile
 	LIBS="-lntl"					\
 	CPPDEFINES=UNIX=1
 
-# stupid default attributes
 chmod a+r -R %{buildroot}
 
 # move libraries to %{_libdir}
@@ -170,6 +154,7 @@ if [ %{_prefix}/lib != %{_libdir} ]; then
     mv -f %{buildroot}%{_prefix}/lib/lib* %{buildroot}/%{_libdir}
 fi
 
+perl -pi -e 's|%{buildroot}||g;' %{buildroot}%{polyboridir}/flags.conf
+
 %clean
 rm -rf %{buildroot}
-
