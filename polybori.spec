@@ -1,7 +1,7 @@
 %define		_disable_ld_as_needed	1
 
 %define		vers		0.6.3
-%define		date		20090827
+%define		date		20091028
 %define		name		polybori
 %define		libname		%mklibname %{name} 0
 %define		devname		%mklibname %{name} -d
@@ -14,7 +14,7 @@ License:	GPL
 Summary:	PolyBoRi is a C++ library for Polynomials over Boolean Rings
 Epoch:		1
 Version:	%{vers}.%{date}
-Release:	%mkrel 2
+Release:	%mkrel 1
 Source0:	polybori-%{vers}-%{date}.tar.bz2
 URL:		http://polybori.sourceforge.net/
 BuildRoot:	%{_tmppath}/%{name}-%{version}-%{release}-buildroot
@@ -32,7 +32,8 @@ BuildRequires:	tetex-latex
 Requires:	ipython >= 0.6
 Requires:	boost >= 1.33
 
-Patch0:		polybori-%{vers}-%{date}-sagemath.patch
+#Patch0:		polybori-%{vers}-%{date}-sagemath.patch
+Patch0:polybori-0.6.3-20090827-sagemath.patch
 
 %description
 PolyBoRi is implemented as a C++ library for Polynomials over
