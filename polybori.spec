@@ -32,8 +32,7 @@ BuildRequires:	tetex-latex
 Requires:	ipython >= 0.6
 Requires:	boost >= 1.33
 
-#Patch0:		polybori-%{vers}-%{date}-sagemath.patch
-Patch0:polybori-0.6.3-20090827-sagemath.patch
+Patch0:		polybori-%{vers}-%{date}-sagemath.patch
 
 %description
 PolyBoRi is implemented as a C++ library for Polynomials over
