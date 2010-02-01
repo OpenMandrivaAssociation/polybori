@@ -12,7 +12,7 @@ License:	GPL
 Summary:	PolyBoRi is a C++ library for Polynomials over Boolean Rings
 Epoch:		1
 Version:	%{vers}.%{date}
-Release:	%mkrel 3
+Release:	%mkrel 4
 Source0:	polybori-%{vers}-%{date}.tar.bz2
 URL:		http://polybori.sourceforge.net/
 BuildRoot:	%{_tmppath}/%{name}-%{version}-%{release}-buildroot
@@ -31,6 +31,7 @@ Requires:	ipython >= 0.6
 Requires:	boost >= 1.33
 
 Patch0:		polybori-%{vers}-%{date}-sagemath.patch
+Patch1:		polybori-0.6.3-20091028-static-init-active_ring.patch
 
 %description
 PolyBoRi is implemented as a C++ library for Polynomials over
@@ -126,6 +127,7 @@ computing Gröbner bases over Boolean Rings.
 %setup -q -n polybori-%{vers}-%{date}/src/polybori-0.6
 
 %patch0 -p3
+%patch1 -p3
 perl -pi -e 's|stub\.c||;' Cudd/util/Makefile
 
 %build
