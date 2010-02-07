@@ -28,7 +28,6 @@ BuildRequires:	tetex-latex
 %py_requires -d
 
 Requires:	ipython >= 0.6
-Requires:	boost >= 1.33
 
 Patch0:		polybori-%{vers}-%{date}-sagemath.patch
 Patch1:		polybori-0.6.3-20091028-static-init-active_ring.patch
