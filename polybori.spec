@@ -1,5 +1,5 @@
 %define		vers		0.6.4
-%define		patchlevel	p4
+%define		patchlevel	p6
 %define		name		polybori
 %define		libname		%mklibname %{name} 0
 %define		devname		%mklibname %{name} -d
@@ -12,7 +12,7 @@ License:	GPL
 Summary:	PolyBoRi is a C++ library for Polynomials over Boolean Rings
 Epoch:		2
 Version:	%{vers}.%{patchlevel}
-Release:	%mkrel 3
+Release:	%mkrel 1
 Source0:	polybori-%{vers}.%{patchlevel}.tar.bz2
 URL:		http://polybori.sourceforge.net/
 BuildRoot:	%{_tmppath}/%{name}-%{version}-%{release}-buildroot
