@@ -1,5 +1,5 @@
-%define		vers		0.6.4
-%define		patchlevel	p6
+%define		vers		0.7.0
+%define		patchlevel	p3
 %define		name		polybori
 %define		libname		%mklibname %{name} 0
 %define		devname		%mklibname %{name} -d
@@ -12,7 +12,7 @@ License:	GPL
 Summary:	PolyBoRi is a C++ library for Polynomials over Boolean Rings
 Epoch:		2
 Version:	%{vers}.%{patchlevel}
-Release:	%mkrel 2
+Release:	%mkrel 1
 Source0:	polybori-%{vers}.%{patchlevel}.tar.bz2
 URL:		http://polybori.sourceforge.net/
 BuildRoot:	%{_tmppath}/%{name}-%{version}-%{release}-buildroot
@@ -40,6 +40,7 @@ computing Gröbner bases over Boolean Rings.
 %files
 %defattr(-,root,root)
 %{_bindir}/ipbori
+%{_bindir}/PolyGUI
 %dir %{polyboridir}
 %{polyboridir}/*
 %{_mandir}/man1/*
@@ -122,15 +123,14 @@ computing Gröbner bases over Boolean Rings.
 
 ########################################################################
 %prep
-%setup -q -n %{name}-%{vers}.%{patchlevel}/src/%{name}-%{vers}
+%setup -q -n %{name}-%{vers}.%{patchlevel}/src/%{name}-0.7
 
 cp ../../patches/SConstruct		./
 cp ../../patches/PyPolyBoRi.py		pyroot/polybori/
 cp ../../patches/pbori_routines_misc.h	polybori/include/
-cp ../../patches/ll.py			pyroot/polybori/
-cp ../../patches/nf.cc			groebner/src/
+cp ../../patches/COrderedIter.h		polybori/include/
 %patch0 -p3
-%patch1 -p3
+#%#patch1 -p3
 
 perl -pi -e 's|stub\.c||;' Cudd/util/Makefile
 
@@ -159,6 +159,58 @@ if [ %{_prefix}/lib != %{_libdir} ]; then
 fi
 
 perl -pi -e 's|%{buildroot}||g;' %{buildroot}%{polyboridir}/flags.conf
+
+cat > %{buildroot}%{_bindir}/ipbori << EOF
+#!/bin/sh
+export CUR=\`pwd\`
+export DOT_SAGE="\$HOME/.sage/"
+export DOT_SAGENB="\$DOT_SAGE"
+mkdir -p \$DOT_SAGE/{maxima,sympow,tmp}
+export SAGE_TESTDIR=\$DOT_SAGE/tmp
+export SAGE_ROOT="$SAGE_ROOT"
+export SAGE_LOCAL="$SAGE_LOCAL"
+export SAGE_DATA="$SAGE_DATA"
+export SAGE_DEVEL="$SAGE_DEVEL"
+export SAGE_DOC="$SAGE_DOC"
+export PATH=$SAGE_LOCAL/bin:%{_datadir}/cdd/bin:\$PATH
+export SINGULARPATH=%{_datadir}/singular/LIB
+export SINGULAR_BIN_DIR=%{_datadir}/singular/%{_arch}
+export PYTHONPATH="$SAGE_PYTHONPATH"
+export SAGE_CBLAS=cblas
+export SAGE_FORTRAN=%{_bindir}/gfortran
+export SAGE_FORTRAN_LIB=\`gfortran --print-file-name=libgfortran.so\`
+export SYMPOW_DIR="\$DOT_SAGE/sympow"
+export LC_MESSAGES=C
+export LC_NUMERIC=C
+exec %{_datadir}/%{name}/ipbori/ipbori
+EOF
+chmod +x %{buildroot}%{_bindir}/ipbori
+
+cat > %{buildroot}%{_bindir}/PolyGUI << EOF
+#!/bin/sh
+export CUR=\`pwd\`
+export DOT_SAGE="\$HOME/.sage/"
+export DOT_SAGENB="\$DOT_SAGE"
+mkdir -p \$DOT_SAGE/{maxima,sympow,tmp}
+export SAGE_TESTDIR=\$DOT_SAGE/tmp
+export SAGE_ROOT="$SAGE_ROOT"
+export SAGE_LOCAL="$SAGE_LOCAL"
+export SAGE_DATA="$SAGE_DATA"
+export SAGE_DEVEL="$SAGE_DEVEL"
+export SAGE_DOC="$SAGE_DOC"
+export PATH=$SAGE_LOCAL/bin:%{_datadir}/cdd/bin:\$PATH
+export SINGULARPATH=%{_datadir}/singular/LIB
+export SINGULAR_BIN_DIR=%{_datadir}/singular/%{_arch}
+export PYTHONPATH="$SAGE_PYTHONPATH"
+export SAGE_CBLAS=cblas
+export SAGE_FORTRAN=%{_bindir}/gfortran
+export SAGE_FORTRAN_LIB=\`gfortran --print-file-name=libgfortran.so\`
+export SYMPOW_DIR="\$DOT_SAGE/sympow"
+export LC_MESSAGES=C
+export LC_NUMERIC=C
+exec %{_datadir}/%{name}/gui/PolyGUI
+EOF
+chmod +x %{buildroot}%{_bindir}/PolyGUI
 
 %clean
 rm -rf %{buildroot}
