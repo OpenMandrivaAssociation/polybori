@@ -5,6 +5,12 @@
 %define		devname		%mklibname %{name} -d
 %define		staticdevname	%mklibname %{name} -d -s
 %define		polyboridir	%{_datadir}/%{name}
+%define		SAGE_ROOT	%{_datadir}/sage
+%define		SAGE_LOCAL	%{SAGE_ROOT}/local
+%define		SAGE_DEVEL	%{SAGE_ROOT}/devel
+%define		SAGE_DOC	%{SAGE_DEVEL}/doc
+%define		SAGE_DATA	%{SAGE_ROOT}/data
+%define		SAGE_PYTHONPATH	%{SAGE_ROOT}/site-packages
 
 Name:		%{name}
 Group:		Sciences/Mathematics
@@ -12,7 +18,7 @@ License:	GPL
 Summary:	PolyBoRi is a C++ library for Polynomials over Boolean Rings
 Epoch:		2
 Version:	%{vers}.%{patchlevel}
-Release:	%mkrel 1
+Release:	%mkrel 2
 Source0:	polybori-%{vers}.%{patchlevel}.tar.bz2
 URL:		http://polybori.sourceforge.net/
 BuildRoot:	%{_tmppath}/%{name}-%{version}-%{release}-buildroot
@@ -160,6 +166,7 @@ fi
 
 perl -pi -e 's|%{buildroot}||g;' %{buildroot}%{polyboridir}/flags.conf
 
+rm -f %{buildroot}%{_bindir}/ipbori
 cat > %{buildroot}%{_bindir}/ipbori << EOF
 #!/bin/sh
 export CUR=\`pwd\`
@@ -167,15 +174,15 @@ export DOT_SAGE="\$HOME/.sage/"
 export DOT_SAGENB="\$DOT_SAGE"
 mkdir -p \$DOT_SAGE/{maxima,sympow,tmp}
 export SAGE_TESTDIR=\$DOT_SAGE/tmp
-export SAGE_ROOT="$SAGE_ROOT"
-export SAGE_LOCAL="$SAGE_LOCAL"
-export SAGE_DATA="$SAGE_DATA"
-export SAGE_DEVEL="$SAGE_DEVEL"
-export SAGE_DOC="$SAGE_DOC"
+export SAGE_ROOT="%{SAGE_ROOT}"
+export SAGE_LOCAL="%{SAGE_LOCAL}"
+export SAGE_DATA="%{SAGE_DATA}"
+export SAGE_DEVEL="%{SAGE_DEVEL}"
+export SAGE_DOC="%{SAGE_DOC}"
 export PATH=$SAGE_LOCAL/bin:%{_datadir}/cdd/bin:\$PATH
 export SINGULARPATH=%{_datadir}/singular/LIB
 export SINGULAR_BIN_DIR=%{_datadir}/singular/%{_arch}
-export PYTHONPATH="$SAGE_PYTHONPATH"
+export PYTHONPATH="%{SAGE_PYTHONPATH}"
 export SAGE_CBLAS=cblas
 export SAGE_FORTRAN=%{_bindir}/gfortran
 export SAGE_FORTRAN_LIB=\`gfortran --print-file-name=libgfortran.so\`
@@ -186,6 +193,7 @@ exec %{_datadir}/%{name}/ipbori/ipbori
 EOF
 chmod +x %{buildroot}%{_bindir}/ipbori
 
+rm -f %{buildroot}%{_bindir}/PolyGUI
 cat > %{buildroot}%{_bindir}/PolyGUI << EOF
 #!/bin/sh
 export CUR=\`pwd\`
@@ -193,15 +201,15 @@ export DOT_SAGE="\$HOME/.sage/"
 export DOT_SAGENB="\$DOT_SAGE"
 mkdir -p \$DOT_SAGE/{maxima,sympow,tmp}
 export SAGE_TESTDIR=\$DOT_SAGE/tmp
-export SAGE_ROOT="$SAGE_ROOT"
-export SAGE_LOCAL="$SAGE_LOCAL"
-export SAGE_DATA="$SAGE_DATA"
-export SAGE_DEVEL="$SAGE_DEVEL"
-export SAGE_DOC="$SAGE_DOC"
+export SAGE_ROOT="%{SAGE_ROOT}"
+export SAGE_LOCAL="%{SAGE_LOCAL}"
+export SAGE_DATA="%{SAGE_DATA}"
+export SAGE_DEVEL="%{SAGE_DEVEL}"
+export SAGE_DOC="%{SAGE_DOC}"
 export PATH=$SAGE_LOCAL/bin:%{_datadir}/cdd/bin:\$PATH
 export SINGULARPATH=%{_datadir}/singular/LIB
 export SINGULAR_BIN_DIR=%{_datadir}/singular/%{_arch}
-export PYTHONPATH="$SAGE_PYTHONPATH"
+export PYTHONPATH="%{SAGE_PYTHONPATH}"
 export SAGE_CBLAS=cblas
 export SAGE_FORTRAN=%{_bindir}/gfortran
 export SAGE_FORTRAN_LIB=\`gfortran --print-file-name=libgfortran.so\`
