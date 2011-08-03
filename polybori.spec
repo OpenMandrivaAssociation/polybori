@@ -18,7 +18,7 @@ License:	GPL
 Summary:	PolyBoRi is a C++ library for Polynomials over Boolean Rings
 Epoch:		2
 Version:	%{vers}.%{patchlevel}
-Release:	%mkrel 2
+Release:	%mkrel 3
 Source0:	polybori-%{vers}.%{patchlevel}.tar.bz2
 URL:		http://polybori.sourceforge.net/
 BuildRoot:	%{_tmppath}/%{name}-%{version}-%{release}-buildroot
@@ -179,7 +179,7 @@ export SAGE_LOCAL="%{SAGE_LOCAL}"
 export SAGE_DATA="%{SAGE_DATA}"
 export SAGE_DEVEL="%{SAGE_DEVEL}"
 export SAGE_DOC="%{SAGE_DOC}"
-export PATH=$SAGE_LOCAL/bin:%{_datadir}/cdd/bin:\$PATH
+export PATH=\$SAGE_LOCAL/bin:%{_datadir}/cdd/bin:\$PATH
 export SINGULARPATH=%{_datadir}/singular/LIB
 export SINGULAR_BIN_DIR=%{_datadir}/singular/%{_arch}
 export PYTHONPATH="%{SAGE_PYTHONPATH}"
@@ -206,7 +206,7 @@ export SAGE_LOCAL="%{SAGE_LOCAL}"
 export SAGE_DATA="%{SAGE_DATA}"
 export SAGE_DEVEL="%{SAGE_DEVEL}"
 export SAGE_DOC="%{SAGE_DOC}"
-export PATH=$SAGE_LOCAL/bin:%{_datadir}/cdd/bin:\$PATH
+export PATH=\$SAGE_LOCAL/bin:%{_datadir}/cdd/bin:\$PATH
 export SINGULARPATH=%{_datadir}/singular/LIB
 export SINGULAR_BIN_DIR=%{_datadir}/singular/%{_arch}
 export PYTHONPATH="%{SAGE_PYTHONPATH}"
