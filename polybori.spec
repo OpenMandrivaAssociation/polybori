@@ -18,7 +18,7 @@ License:	GPL
 Summary:	PolyBoRi is a C++ library for Polynomials over Boolean Rings
 Epoch:		2
 Version:	%{vers}.%{patchlevel}
-Release:	%mkrel 2
+Release:	%mkrel 3
 Source0:	polybori-%{vers}.%{patchlevel}.tar.bz2
 URL:		http://polybori.sourceforge.net/
 BuildRoot:	%{_tmppath}/%{name}-%{version}-%{release}-buildroot
@@ -138,6 +138,7 @@ cp ../../patches/plot.py		pyroot/polybori
 %patch0 -p3
 
 perl -pi -e 's|stub\.c||;' Cudd/util/Makefile
+perl -pi -e 's|png12|png|;' SConstruct
 
 %build
 %scons prepare-install	CCFLAGS="%{optflags}" CPPDEFINES=UNIX=1
