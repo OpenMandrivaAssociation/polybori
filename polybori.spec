@@ -1,9 +1,6 @@
-%define		vers		0.7.1
-%define		patchlevel	p6
 %define		name		polybori
 %define		libname		%mklibname %{name} 0
 %define		devname		%mklibname %{name} -d
-%define		staticdevname	%mklibname %{name} -d -s
 %define		polyboridir	%{_datadir}/%{name}
 %define		SAGE_ROOT	%{_datadir}/sage
 %define		SAGE_LOCAL	%{SAGE_ROOT}/local
@@ -17,38 +14,49 @@ Group:		Sciences/Mathematics
 License:	GPL
 Summary:	PolyBoRi is a C++ library for Polynomials over Boolean Rings
 Epoch:		2
-Version:	%{vers}.%{patchlevel}
-Release:	%mkrel 4
-Source0:	polybori-%{vers}.%{patchlevel}.tar.bz2
+Version:	0.8.2
+Release:	1
 URL:		http://polybori.sourceforge.net/
-BuildRoot:	%{_tmppath}/%{name}-%{version}-%{release}-buildroot
+Source0:	http://downloads.sourceforge.net/%{name}/%{name}-%{version}.tar.gz
+Source1:        %{name}.desktop
+# These logos were created with gimp from the official polybori logo
+Source2:        %{name}-logos.tar.xz
+# This patch is specific to Fedora, although upstream helped create it.  Use
+# system CUDD libraries instead of building the included CUDD sources.
+Patch0:         %{name}-system-cudd.patch
 
-BuildRequires:	doxygen
-BuildRequires:	scons
 BuildRequires:	boost-devel
-BuildRequires:	ntl-devel
+BuildRequires:	cudd-devel
+BuildRequires:	desktop-file-utils
+BuildRequires:	doxygen
 BuildRequires:	libm4ri-devel
+BuildRequires:	ntl-devel
+BuildRequires:	png-devel
+BuildRequires:	python-imaging-devel
+BuildRequires:	python-qt4-devel
+BuildRequires:	scons
 BuildRequires:	texlive
-
+BuildRequires:	texlive-tex4ht
 %py_requires -d
 
-Requires:	ipython >= 0.6
-
-Patch0:		polybori-%{vers}.%{patchlevel}-sagemath.patch
-
 %description
-PolyBoRi is implemented as a C++ library for Polynomials over
-Boolean Rings, which provides high-level data types for Boolean
-polynomials. A python-interface yields extensible algorithms for
-computing Gröbner bases over Boolean Rings.
+PolyBoRi is a special purpose computer algebra system for computations
+in Boolean Rings.  The core is a C++ library, which provides high-level
+data types for Boolean polynomials and related structures.  As a unique
+approach, binary decision diagrams are used as internal storage type for
+polynomial structures.  On top of this, we provide a Python interface
+for parsing of complex polynomial systems, as well as for sophisticated
+and extendable strategies for GrÃ¶bner base computation.
 
 %files
-%defattr(-,root,root)
 %{_bindir}/ipbori
 %{_bindir}/PolyGUI
 %dir %{polyboridir}
 %{polyboridir}/*
 %{_mandir}/man1/*
+%doc %{_docdir}/%{name}
+%{_iconsdir}/*/apps/%{name}.png
+%{_datadir}/applications/%{name}.desktop
 
 ########################################################################
 %package	-n python-%{name}
@@ -60,9 +68,8 @@ PolyBoRi is a C++ library for Polynomials over Boolean Rings.
 This package provides python bindings to %{name}.
 
 %files		-n python-%{name}
-%defattr(-,root,root)
-%dir %{py_platlibdir}/%{name}
-%{py_platlibdir}/%{name}/*
+%dir %{py_platsitedir}/%{name}
+%{py_platsitedir}/%{name}/*
 
 ########################################################################
 %package	-n %{libname}
@@ -74,7 +81,6 @@ Provides:	lib%{name} = %{version}-%{release}
 PolyBoRi runtime libraries.
 
 %files		-n %{libname}
-%defattr(-,root,root)
 %{_libdir}/lib*.so.*
 
 ########################################################################
@@ -88,85 +94,83 @@ Requires:	lib%{name} = %{version}-%{release}
 PolyBoRi development files.
 
 %files		-n %{devname}
-%defattr(-,root,root)
-%dir %{_includedir}/%{name}
-%{_includedir}/%{name}/*
-%dir %{_includedir}/cudd
-%{_includedir}/cudd/*
+%{_includedir}/polybori.h
+%{_includedir}/%{name}
 %{_libdir}/lib*.so
 
 ########################################################################
-%package	-n %{staticdevname}
-Group:		Development/Other
-Summary:	PolyBoRi static libraries
-Provides:	%{name}-static-devel = %{version}-%{release}
-Requires:	lib%{name} = %{version}-%{release}
-Requires:	%{name}-devel = %{version}-%{release}
-
-%description	-n %{staticdevname}
-PolyBoRi static libraries files.
-
-%files		-n %{staticdevname}
-%defattr(-,root,root)
-%{_libdir}/*.a
-
-########################################################################
-%package	doc
-Group:		Development/Other
-Summary:	PolyBoRi documentation
-
-%description	doc
-PolyBoRi is implemented as a C++ library for Polynomials over
-Boolean Rings, which provides high-level data types for Boolean
-polynomials. A python-interface yields extensible algorithms for
-computing Gröbner bases over Boolean Rings.
-
-%files		doc
-%defattr(-,root,root)
-%dir %{_docdir}/%{name}
-%{_docdir}/%{name}/*
-
-########################################################################
 %prep
-%setup -q -n %{name}-%{vers}.%{patchlevel}/src/%{name}-0.7
+%setup -q
 
-cp ../../patches/SConstruct		./
-cp ../../patches/PyPolyBoRi.py		pyroot/polybori/
-cp ../../patches/COrderedIter.h		polybori/include/
-cp ../../patches/nf.{h,cc}		groebner/src
-cp ../../patches/plot.py		pyroot/polybori
-%patch0 -p3
+%patch0
 
-perl -pi -e 's|stub\.c||;' Cudd/util/Makefile
-perl -pi -e 's|png12|png|;' SConstruct
+# Remove private copy of system libs (Cudd, m4ri, and pyparsing)
+rm -rf Cudd M4RI PyPolyBoRi/pyparsing.py
+
+# Fix RPM dependency generation
+for fil in gui/PolyGUI ipbori/ipbori; do
+  sed "s|/usr/bin/env python|/usr/bin/python|" ${fil} > ${fil}.new
+  touch -r ${fil} ${fil}.new
+  mv ${fil}.new ${fil}
+done
+
+# Eliminate rpaths and enable NTL support
+sed -e "s/'\${_relative_rpath.*/''])/" \
+    -e "s/main_wrapper\.cc/& ntl_wrapper.cc/" \
+    -i SConstruct
+
+# Set up the build flags
+cat > custom.py <<EOF
+PREFIX = "%{buildroot}%{_prefix}"
+INSTALLDIR = "%{buildroot}%{_datadir}/%{name}"
+DOCDIR = "%{buildroot}%{_docdir}/%{name}"
+MANDIR = "%{buildroot}%{_mandir}"
+PYINSTALLPREFIX = "%{buildroot}%{python_sitearch}"
+DEVEL_PREFIX = "%{buildroot}%{_prefix}"
+DEVEL_LIB_PREFIX= "%{buildroot}%{_libdir}"
+CONFFILE = "%{buildroot}%{_datadir}/%{name}/flags.conf"
+CCFLAGS = "%{optflags} -DPBORI_USE_ORIGINAL_CUDD -DPBORI_HAVE_NTL"
+CPPPATH = "-I%{_includedir}/m4ri"
+SHLINKFLAGS = "$RPM_LD_FLAGS -Wl,--as-needed"
+MR4I_RPM = "True"
+LIBS = "-lntl -lcudd"
+EOF
 
 %build
-%scons prepare-install	CCFLAGS="%{optflags}" CPPDEFINES=UNIX=1
-%scons prepare-devel	CCFLAGS="%{optflags}" CPPDEFINES=UNIX=1
+%scons prepare-install
 
 %install
-%scons install devel-install	CCFLAGS="%{optflags}" 	\
-	PREFIX=%{buildroot}%{_prefix}			\
-	PYINSTALLPREFIX=%{buildroot}%{py_platlibdir}	\
-	INSTALLDIR=%{buildroot}%{polyboridir}		\
-	PYPREFIX=%{py_prefix}				\
-	PYTHON=%{__python}				\
-	DOCDIR=%{buildroot}%{_docdir}/%{name}		\
-	MANDIR=%{buildroot}%{_mandir}			\
-	LIBS="-lntl"					\
-	CPPDEFINES=UNIX=1				\
-        CONFFILE=%{buildroot}%{_datadir}/polybori/flags.conf
+%scons install devel-install
 
+# The install step doesn't set shared object permissions correctly
+chmod 0755 %{buildroot}%{_libdir}/*.so.0.0.0
+chmod 0755 %{buildroot}%{python_sitearch}/%{name}/dynamic/PyPolyBoRi.so
 
-chmod a+r -R %{buildroot}
+# Install the desktop file
+cp -p %{SOURCE1} .
+desktop-file-install --dir=%{buildroot}%{_datadir}/applications %{name}.desktop
 
-# move libraries to %{_libdir}
-if [ %{_prefix}/lib != %{_libdir} ]; then
-    mkdir -p %{buildroot}/%{_libdir}
-    mv -f %{buildroot}%{_prefix}/lib/lib* %{buildroot}/%{_libdir}
-fi
+# Install the icons
+mkdir -p %{buildroot}%{_iconsdir}
+tar xJf %{SOURCE2} -C %{buildroot}%{_iconsdir}
 
-perl -pi -e 's|%{buildroot}||g;' %{buildroot}%{polyboridir}/flags.conf
+# Move the ipbori script to bindir
+rm -f %{buildroot}%{_bindir}/ipbori
+sed "s|^THIS=.*|THIS=%{_datadir}/%{name}/ipbori|" \
+  %{buildroot}%{_datadir}/%{name}/ipbori/ipbori > %{buildroot}%{_bindir}/ipbori
+touch -r %{buildroot}%{_datadir}/%{name}/ipbori/ipbori \
+  %{buildroot}%{_bindir}/ipbori
+chmod a+x %{buildroot}%{_bindir}/ipbori
+rm -f %{buildroot}%{_datadir}/%{name}/ipbori/ipbori
+
+# Fixup flags.conf
+sed -e "s|%{buildroot}||" \
+    -e "/^CPPPATH/s/-I//" \
+    -e "/^CPPDEFINES/s/]/, 'PBORI_USE_ORIGINAL_CUDD', 'PBORI_HAVE_NTL']/" \
+    -e "/^CCFLAGS/s/'-DPBORI[_[:alpha:]]*', //g" \
+    -e "/^LIBS/s/-l//g" \
+    -e "/^LIBS/s/'m4ri', //" \
+    -i %{buildroot}%{_datadir}/%{name}/flags.conf
 
 rm -f %{buildroot}%{_bindir}/ipbori
 cat > %{buildroot}%{_bindir}/ipbori << EOF
@@ -222,5 +226,4 @@ exec %{_datadir}/%{name}/gui/PolyGUI
 EOF
 chmod +x %{buildroot}%{_bindir}/PolyGUI
 
-%clean
-rm -rf %{buildroot}
+rm -f %{buildroot}%{_libdir}/*.a
