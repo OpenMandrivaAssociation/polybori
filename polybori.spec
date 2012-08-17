@@ -1,13 +1,13 @@
-%define		name		polybori
-%define		libname		%mklibname %{name} 0
-%define		devname		%mklibname %{name} -d
-%define		polyboridir	%{_datadir}/%{name}
-%define		SAGE_ROOT	%{_datadir}/sage
-%define		SAGE_LOCAL	%{SAGE_ROOT}/local
-%define		SAGE_DEVEL	%{SAGE_ROOT}/devel
-%define		SAGE_DOC	%{SAGE_DEVEL}/doc
-%define		SAGE_DATA	%{SAGE_ROOT}/data
-%define		SAGE_PYTHONPATH	%{SAGE_ROOT}/site-packages
+%define		name			polybori
+%define		libpolybori		%mklibname %{name} 0
+%define		libpolybori_devel	%mklibname %{name} -d
+%define		polyboridir		%{_datadir}/%{name}
+%define		SAGE_ROOT		%{_datadir}/sage
+%define		SAGE_LOCAL		%{SAGE_ROOT}/local
+%define		SAGE_DEVEL		%{SAGE_ROOT}/devel
+%define		SAGE_DOC		%{SAGE_DEVEL}/doc
+%define		SAGE_DATA		%{SAGE_ROOT}/data
+%define		SAGE_PYTHONPATH		%{SAGE_ROOT}/site-packages
 
 Name:		%{name}
 Group:		Sciences/Mathematics
@@ -72,28 +72,28 @@ This package provides python bindings to %{name}.
 %{py_platsitedir}/%{name}/*
 
 ########################################################################
-%package	-n %{libname}
+%package	-n %{libpolybori}
 Group:		System/Libraries
 Summary:	PolyBoRi runtime libraries
 Provides:	lib%{name} = %{version}-%{release}
 
-%description	-n %{libname}
+%description	-n %{libpolybori}
 PolyBoRi runtime libraries.
 
-%files		-n %{libname}
+%files		-n %{libpolybori}
 %{_libdir}/lib*.so.*
 
 ########################################################################
-%package	-n %{devname}
+%package	-n %{libpolybori_devel}
 Group:		Development/Other
 Summary:	PolyBoRi development files
 Provides:	%{name}-devel = %{version}-%{release}
 Requires:	lib%{name} = %{version}-%{release}
 
-%description	-n %{devname}
+%description	-n %{libpolybori_devel}
 PolyBoRi development files.
 
-%files		-n %{devname}
+%files		-n %{libpolybori_devel}
 %{_includedir}/polybori.h
 %{_includedir}/%{name}
 %{_libdir}/lib*.so
