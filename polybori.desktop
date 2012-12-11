@@ -1,0 +1,12 @@
+[Desktop Entry]
+Version=1.0
+Type=Application
+Name=PolyBoRi
+GenericName=Boolean Rings
+Comment=PolyBoRi GUI
+Exec=PolyGUI %f
+TryExec=PolyGUI
+Terminal=false
+StartupNotify=false
+Icon=polybori
+Categories=Education;Science;Math;Qt;
