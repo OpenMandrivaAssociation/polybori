@@ -20,9 +20,9 @@
 +#include <cudd/cudd.h>
  
  #endif
---- ./SConstruct.orig	2012-07-09 02:23:24.000000000 -0600
-+++ ./SConstruct	2012-08-06 12:26:19.482015946 -0600
-@@ -900,18 +900,18 @@ BuildPyPBPath = PathJoiner(BuildPath(Ins
+--- ./SConstruct.orig	2013-01-29 15:37:01.000000000 -0700
++++ ./SConstruct	2013-02-06 19:07:47.571371270 -0700
+@@ -1082,18 +1082,18 @@ def shared_object(o, **kwds):
  #env.Append(CPPDEFINES=["PBORI_HAVE_IEEE_754"])
  
  
@@ -47,16 +47,16 @@
  
  ###################
  # End of Cudd stuff
-@@ -967,7 +967,7 @@ pb_src=[PBPath('src', source) for source
+@@ -1149,7 +1149,7 @@ pb_src=[PBPath('src', source) for source
  libpb_name = 'polybori'
  libpb_name_static = libpb_name
  
--libpb=env.StaticLibrary(PBPath(libpb_name_static), pb_src + cudd_resources)
-+libpb=env.StaticLibrary(PBPath(libpb_name_static), pb_src) #+ cudd_resources)
+-libpb=env.StaticLibrary(PBPath(libpb_name_static), pb_src + cudd_resources, 
++libpb=env.StaticLibrary(PBPath(libpb_name_static), pb_src, #+ cudd_resources, 
+                         CCFLAGS=['-g'] + env['CCFLAGS'])
  
- if isinstance(libpb,list):
-     libpb=libpb[0]
-@@ -1229,9 +1229,9 @@ disttar.py doxygen.py""")
+ 
+@@ -1442,9 +1442,9 @@ disttar.py doxygen.py""")
          allsrcs.append(env.Dir(dirname))
  
      # Cudd is not distributed completely (unused and unfree things removed)
@@ -69,34 +69,3 @@
  
      # doc is not distributed completely
      allsrcs += [ DocPath(dsrc) for dsrc in Split("""doxygen.conf index.html.in
-@@ -1523,8 +1523,8 @@ if HAVE_DOXYGEN:
-     documastersubdirs += " c++"
- 
- env.DocuMaster(DocPath('index.html'), [DocPath('index.html.in')] + [
--    env.Dir(DocPath(srcs)) for srcs in Split(documastersubdirs) ] + [
--    env.Dir('Cudd/cudd/doc')])  
-+    env.Dir(DocPath(srcs)) for srcs in Split(documastersubdirs) ]) #+ [
-+    #env.Dir('Cudd/cudd/doc')])  
- 
- pbrpmname = pboriname + '-' + pboriversion + "." + pborirelease 
- 
-@@ -1680,8 +1680,8 @@ if 'install' in COMMAND_LINE_TARGETS:
-     env.Clean(pydocuinst, pydocuinst)
- 
-     # Copy Cudd documentation
--    CopyAll(InstDocPath('cudd'), 'Cudd/cudd/doc', env) 
--    CopyAll(InstDocPath('cudd/icons'), 'Cudd/cudd/doc/icons', env)
-+    #CopyAll(InstDocPath('cudd'), 'Cudd/cudd/doc', env) 
-+    #CopyAll(InstDocPath('cudd/icons'), 'Cudd/cudd/doc/icons', env)
- 
-     # Copy Tutorial
-     if have_l2h or have_t4h :
-@@ -1693,7 +1693,7 @@ if 'install' in COMMAND_LINE_TARGETS:
-     FinalizeNonExecs(env.DocuMaster(InstDocPath('index.html'),
-                                     [DocPath('index.html.in')] + [ 
-         env.Dir(InstDocPath(srcs)) for srcs in Split("""tutorial python
--        c++ cudd""") ] ))
-+        c++""") ] ))
- 
-     # Non-executables to be installed
-     pyfile_srcs = glob(PyRootPath('polybori/*.py'))
