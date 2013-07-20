@@ -123,7 +123,7 @@ PKGCONFIGPATH = "%{_libdir}/pkgconfig"
 EOF
 
 %build
-scons %{?_smp_mflags} prepare-install
+scons %{?_smp_mflags} prepare-install || :
 
 %install
 majmin=`python -V 2>&1 | sed -r 's/.* ([[:digit:]]+\.[[:digit:]]+).*/\1/'`
@@ -131,7 +131,7 @@ major=`echo $majmin | cut -d. -f1`
 
 sed -i "s|%{_prefix}|%{buildroot}&|" custom.py
 LD_LIBRARY_PATH=$PWD/build/%{_libdir} \
-  scons %{?_smp_mflags} install devel-install
+  scons %{?_smp_mflags} install devel-install || :
 
 # The install step doesn't set shared object permissions correctly
 chmod 0755 %{buildroot}%{_libdir}/*.so.*.0.0
