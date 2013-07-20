@@ -1,6 +1,8 @@
 %define		name			polybori
 %define		old_libpolybori		%mklibname polybori 0
 %define		old_libpolybori_devel	%mklibname polybori -d
+# http://bugs.python.org/issue17998
+%define		buggy_re_i586_python	1
 
 Name:           polybori
 Version:        0.8.3
@@ -86,6 +88,12 @@ Qt GUI for %{name}.
 %prep
 %setup -q
 %patch0
+
+%ifarch %{ix86}
+%if %{buggy_re_i586_python}
+sed -i 's/|re\.S//g' SConstruct
+%endif
+%endif
 
 # Remove private copy of system libs (Cudd and pyparsing)
 rm -rf Cudd PyPolyBoRi/pyparsing.py
