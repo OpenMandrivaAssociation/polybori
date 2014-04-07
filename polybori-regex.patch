@@ -1,0 +1,44 @@
+--- SConstruct.orig	2013-01-29 15:37:01.000000000 -0700
++++ SConstruct	2013-08-01 15:20:08.695760012 -0600
+@@ -561,16 +561,14 @@
+     """Creates soname."""
+ 
+     target = str(env.subst(target))
+-    import re
+-    soPattern = re.compile('(.*)\.[0-9]*\.[^.]*$', re.I|re.S)
+-    soname = soPattern.findall(path.basename(target))
+-
++    from subprocess import check_output
++    basename = path.basename(target)
++    if len(basename) == 0:
++      return ''
++    soname = check_output('sed \'s/\.[0-9]*\.[0-9]*$//\' <<< ' + basename, shell=True).rstrip()
+     if len(soname) > 0:
+-        return prefix + soname[0] + suffix   
++        return prefix + soname + suffix
+     else:
+-        if env['PLATFORM']=="darwin":
+-            return prefix + path.basename(target) + suffix
+-
+         return ''
+     
+ 
+@@ -1103,16 +1101,14 @@
+ def SymlinkReadableLibname(files):
+     """ Generate symbolik link with more readable library name."""
+     
++    from subprocess import check_output
+     suffix = env.subst('$SHLIBVERSIONSUFFIX')
+     simplesuffix = env.subst('$SHLIBSUFFIX')
+     result = []
+-    import re
+-    soPattern = re.compile('(.*)\.[0-9]*\.[0-9]*$', re.I|re.S)
+-    sonameversion = soPattern.findall(path.basename(env.subst('$LIBRARY_VERSION')))[0]
+     
+     for fname in files:
+         fname = str(fname)
+-        soname = soPattern.sub(r'\1', fname)
++        soname = check_output('sed \'s/\.[0-9]*\.[0-9]*$//\' <<< ' + fname, shell=True).rstrip()
+         versionname = fname.replace('.' + env.subst('$LIBRARY_VERSION'), '')
+         simple = fname.replace(suffix, simplesuffix)
+ 

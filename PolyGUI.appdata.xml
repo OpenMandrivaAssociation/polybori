@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<application>
+ <id type="desktop">PolyGUI.desktop</id>
+ <licence>CC0</licence>
+ <description>
+  <p>
+   PolyBoRi is a special purpose computer algebra system for computations in
+   Boolean Rings.
+  </p>
+  <p>
+   The core of PolyBoRi is a C++ library, which provides high-level data types
+   for Boolean polynomials and related structures.  As a unique approach,
+   binary decision diagrams are used as internal storage type for polynomial
+   structures.  On top of this, we provide a Python interface for parsing of
+   complex polynomial systems, as well as for sophisticated and extendable
+   strategies for Gröbner base computation.
+  </p>
+ </description>
+ <screenshots>
+  <screenshot type="default">http://polybori.sourceforge.net/doc/tutorial/PolyGui.png</screenshot>
+  <screenshot>http://polybori.sourceforge.net/doc/tutorial/PolyGui-Options.png</screenshot>
+ </screenshots>
+ <url type="homepage">http://polybori.sourceforge.net/</url>
+ <!-- FIXME: change this to an upstream email address for spec updates
+         <updatecontact>someone_who_cares@upstream_project.org</updatecontact>
+  -->
+</application>

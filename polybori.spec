@@ -2,19 +2,25 @@
 %define		old_libpolybori		%mklibname polybori 0
 %define		old_libpolybori_devel	%mklibname polybori -d
 
+# NOTE: %%{_includedir}/polybori/cacheopts.h is empty on some platforms, but
+# it must be present anyway.  DO NOT REMOVE IT.
+
 Name:           polybori
 Version:        0.8.3
-Release:        1%{?dist}
+Release:        2%{?dist}
 Summary:        Framework for Boolean Rings
 License:        GPLv2+
 URL:            http://polybori.sourceforge.net/
 Source0:        http://downloads.sourceforge.net/%{name}/%{name}-%{version}.tar.gz
 # These logos were created with gimp from the official polybori logo
 Source1:        %{name}-logos.tar.xz
-Source2:        %{name}.rpmlintrc
+Source2:        PolyGUI.appdata.xml
+Source3:        %{name}.rpmlintrc
 # This patch is specific to Fedora, although upstream helped create it.  Use
 # system CUDD libraries instead of building the included CUDD sources.
 Patch0:         %{name}-system-cudd.patch
+# Temporary workaround for bz 974257.  Not for upstream.
+Patch1:         %{name}-regex.patch
 
 BuildRequires:	boost-devel
 BuildRequires:	cudd-devel
@@ -86,6 +92,7 @@ Qt GUI for %{name}.
 %prep
 %setup -q
 %patch0
+%patch1
 
 # Remove private copy of system libs (Cudd and pyparsing)
 rm -rf Cudd PyPolyBoRi/pyparsing.py
@@ -136,10 +143,18 @@ sed -ri 's/Math/&;/;/(Path|MimeType)=/d' \
    %{buildroot}%{_datadir}/applications/PolyGUI.desktop
 desktop-file-validate %{buildroot}%{_datadir}/applications/PolyGUI.desktop
 
+# AppData file
+mkdir -p %{buildroot}%{_datadir}/appdata
+install -pm 644 %{SOURCE2} %{buildroot}%{_datadir}/appdata
+
 # Replace the single XPM icon with multiple sizes of PNG icons
 rm -fr %{buildroot}%{_datadir}/pixmaps
 mkdir -p %{buildroot}%{icondir}
 tar xJf %{SOURCE1} -C %{buildroot}%{icondir}
+
+# Fixup config.h
+sed -e '/PBORI_HAVE_M4RI_PNG/,$s/^#endif$/&\n#ifndef PBORI_HAVE_NTL\n#define PBORI_HAVE_NTL\n#endif/' \
+    -i %{buildroot}%{_includedir}/%{name}/config.h
 
 # Fixup flags.conf
 sed -e "s|%{buildroot}||" \
@@ -200,6 +215,7 @@ gtk-update-icon-cache %{icondir} >&/dev/null ||:
 
 %files gui
 %{_bindir}/PolyGUI*
+%{_datadir}/appdata/PolyGUI.appdata.xml
 %{_datadir}/applications/PolyGUI.desktop
 %{_datadir}/%{name}/gui/
 %{icondir}/*/apps/PolyGUI.png
