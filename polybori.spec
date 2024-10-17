@@ -10,7 +10,7 @@ Version:        0.8.3
 Release:        2%{?dist}
 Summary:        Framework for Boolean Rings
 License:        GPLv2+
-URL:            http://polybori.sourceforge.net/
+URL:            https://polybori.sourceforge.net/
 Source0:        http://downloads.sourceforge.net/%{name}/%{name}-%{version}.tar.gz
 # These logos were created with gimp from the official polybori logo
 Source1:        %{name}-logos.tar.xz
